@@ -55,7 +55,15 @@
         }
 
         .logo {
-            max-width: 180px;
+            width: 300px; /* Define a largura */
+            height: auto; /* Define a altura */
+            border-radius: 10px; /* Mantém bordas arredondadas, opcional */
+        }
+
+        .promo-image {
+            left: -30px;
+            position: relative;
+            max-width: 200px;
             height: auto;
             border-radius: 10px;
         }
@@ -77,27 +85,17 @@
             margin-bottom: 10px;
         }
 
-        .offer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .offer-image-right {
-            max-width: 250px;
+        .promo-container {
+            width: 180px;
             height: auto;
             border-radius: 10px;
-            margin-bottom: 10px;
+            overflow: hidden;
         }
 
         .product-container {
-            display: flex;
-            flex-direction: column;
             width: 100%;
             list-style: none;
             padding: 0;
-            gap: 15px;
         }
 
         .product {
@@ -116,16 +114,6 @@
             font-size: 1.2em;
             box-sizing: border-box;
         }
-
-        .product-name {
-            text-align: left;
-            flex: 2;
-        }
-
-        .product-price {
-            text-align: right;
-            flex: 1;
-        }
     </style>
 </head>
 
@@ -134,14 +122,26 @@
         <div class="header">
             <div class="header-left">
                 <div class="header-text">BOVINOS</div>
-                <img src="WhatsApp Image 2025-03-22 at 17.41.26.jpeg" alt="Logo" class="logo">
+                <img src="logo-principal.jpeg" alt="Logo" class="logo">
             </div>
-            <div class="header-text">OFERTA</div>
+            <div class="header-right">
+                <div class="header-text">OFERTA</div>
+                <div class="promo-container">
+                    <?php
+                    // Busca todas as imagens na pasta promo
+                    $path = "promo/";
+                    $files = glob($path . "*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+
+                    // Se houver imagens, exibe a primeira
+                    if (!empty($files)) {
+                        echo '<img src="' . $files[0] . '" class="promo-image" id="promo">';
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
 
-        
-        <div class="price-placeholder">PROMO:0,00$</div>
-
+        <div class="price-placeholder"></div>
         <div class="divider"></div>
 
         <ul class="product-container">
@@ -152,16 +152,14 @@
             while (!feof($arquivo)) {
                 $linha = fgets($arquivo, 1024);
                 $list = explode(";", $linha);
-
                 if (isset($list[1]) && $list[1] != '0') {
                     $products[] = $list;
                 }
             }
             fclose($arquivo);
 
-            $pageSize = 4;
+            $pageSize = 6;
             $totalPages = ceil(count($products) / $pageSize);
-
             $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
             $currentPage = max(1, min($currentPage, $totalPages));
 
@@ -171,7 +169,7 @@
             for ($i = $start; $i < $end; $i++) {
                 $product = $products[$i];
             ?>
-                <li class="product" id="product-<?php echo $i; ?>">
+                <li class="product">
                     <span class="product-name"><?php echo $product[0]; ?>:</span>
                     <span class="product-price">R$ <?php echo $product[1]; ?></span>
                 </li>
@@ -180,8 +178,21 @@
     </div>
 
     <script>
-        var currentPage = <?php echo $currentPage; ?>;
+        // Lista de imagens carregadas do PHP
+        var images = <?php echo json_encode($files); ?>;
+        
+        var index = 0;
+        var imageElement = document.getElementById('promo');
+        var intervalTime = 6000; // Tempo para trocar imagem e página juntos
         var totalPages = <?php echo $totalPages; ?>;
+        var currentPage = <?php echo $currentPage; ?>;
+
+        function changeImage() {
+            if (images.length > 0) {
+                index = (index + 1) % images.length;
+                imageElement.src = images[index];
+            }
+        }
 
         function nextPage() {
             currentPage++;
@@ -191,7 +202,11 @@
             window.location.href = '?page=' + currentPage;
         }
 
-        setInterval(nextPage, 6000);
+        // Troca a imagem a cada 6 segundos
+        setInterval(changeImage, 3000);
+
+        // Troca a página depois de um tempo (exemplo: 30 segundos)
+        setInterval(nextPage, 15000);
     </script>
 </body>
 
