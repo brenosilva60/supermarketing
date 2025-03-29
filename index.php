@@ -29,7 +29,7 @@
 
                     // Exibir as imagens no formato de carrossel
                     for ($i = 0; $i < $numExibir && $i < $numImagens; $i++) {
-                        echo '<img src="' . $files[$i] . '" class="promo-image" id="promo-image-' . $i . '">';
+                        echo '<img src="' . $files[$i] . '" class="promo-image" id="promo-image-' . $i . '" data-product="' . pathinfo($files[$i], PATHINFO_FILENAME) . '">'; 
                     }
                     ?>
                 </div>
@@ -40,6 +40,7 @@
 
         <ul class="product-container" id="product-list">
             <?php
+            // Carregar os produtos a partir do arquivo produto.txt
             $arquivo = fopen('produto.txt', 'r');
             $products = [];
             while (!feof($arquivo)) {
@@ -68,6 +69,7 @@
     </div>
 
     <script>
+    // Carregar as imagens e os produtos no JavaScript
     var images = <?php echo json_encode($files); ?>;
     var products = <?php echo json_encode($products); ?>;
     var numExibir = 4;
@@ -77,7 +79,7 @@
     var promoContainer = document.getElementById('promo-container');
     var productList = document.getElementById('product-list');
 
-    // Função para trocar as imagens do carrossel
+    // Função para trocar as imagens do carrossel e associar com os produtos
     function changeImages() {
         promoContainer.innerHTML = ''; // Limpa as imagens antes de adicionar novas
 
@@ -87,6 +89,8 @@
             var imgElement = document.createElement('img');
             imgElement.src = images[imgIndex];
             imgElement.className = 'promo-image';
+            imgElement.setAttribute('data-product', images[imgIndex].match(/([^\/]+)(?=\.[^\/]+$)/)[0]
+                .toLowerCase()); // Converte para minúsculas
             promoContainer.appendChild(imgElement);
         }
 
@@ -103,23 +107,29 @@
 
         // Adiciona os produtos correspondentes às imagens
         for (var i = 0; i < numExibir; i++) {
-            var productIndex = (index + i) % totalProducts;
-            var product = products[productIndex];
-            var productElement = document.createElement('li');
-            productElement.className = 'product';
-            productElement.id = 'product-' + i;
+            var imgIndex = (index + i) % totalImages;
+            var productName = images[imgIndex].match(/([^\/]+)(?=\.[^\/]+$)/)[0]
+                .toLowerCase(); // Pega o nome do produto pela imagem e converte para minúsculas
 
-            var productName = document.createElement('span');
-            productName.className = 'product-name';
-            productName.textContent = product[0] + ':';
+            var product = products.find(p => p[0].toLowerCase().includes(productName)); // Comparação case-insensitive
 
-            var productPrice = document.createElement('span');
-            productPrice.className = 'product-price';
-            productPrice.textContent = 'R$ ' + product[1];
+            if (product) {
+                var productElement = document.createElement('li');
+                productElement.className = 'product';
+                productElement.id = 'product-' + i;
 
-            productElement.appendChild(productName);
-            productElement.appendChild(productPrice);
-            productList.appendChild(productElement);
+                var productNameElement = document.createElement('span');
+                productNameElement.className = 'product-name';
+                productNameElement.textContent = product[0] + ':';
+
+                var productPriceElement = document.createElement('span');
+                productPriceElement.className = 'product-price';
+                productPriceElement.textContent = 'R$ ' + product[1];
+
+                productElement.appendChild(productNameElement);
+                productElement.appendChild(productPriceElement);
+                productList.appendChild(productElement);
+            }
         }
 
         // Atualiza o índice para a próxima rodada
@@ -127,7 +137,7 @@
     }
 
     // Chama a função para trocar as imagens a cada 10 segundos
-    setInterval(changeImages, 10000); // Troca das imagens a cada 10 segundos
+    setInterval(changeImages, 3000); // Troca das imagens a cada 10 segundos
     </script>
 </body>
 
