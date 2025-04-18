@@ -5,19 +5,22 @@
 }
 
 body {
-    min-height: 768px;
-    max-height: 768px;
-    overflow-y: auto;
+    background: url('carne.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
 }
 
 .container {
     width: 100%;
-    max-width: 1360px;
-    margin: 0 auto;
+    max-width: 1920px;
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 10px;
 }
 
 /* HEADER LADO A LADO */
@@ -147,49 +150,147 @@ body {
     color: yellow;
 }
 
-/* AJUSTES PARA TELAS MENORES */
-@media (max-width: 1024px) {
+/* AJUSTES PARA TELAS ATÉ 1360px */
+@media (max-width: 1360px) {
+    .container {
+        padding: 10px;
+    }
+
     .header-title {
-        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        font-size: clamp(1.6rem, 2.4vw, 2.8rem);
+    }
+
+    .logo {
+        width: clamp(140px, 12vw, 180px);
     }
 
     .promo-image {
-        width: clamp(100px, 20vw, 160px);
-        height: clamp(100px, 20vw, 160px);
+        width: clamp(110px, 11vw, 160px);
+        height: clamp(110px, 11vw, 160px);
+    }
+
+    .promo-info-box {
+        width: 100px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .product {
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
+
+/* AJUSTES PARA TELAS ATÉ 1280px */
+@media (max-width: 1280px) {
+    .header-title {
+        font-size: clamp(1.6rem, 2.3vw, 2.6rem);
+    }
+
+    .promo-image {
+        width: clamp(110px, 11vw, 160px);
+        height: clamp(110px, 11vw, 160px);
+    }
+
+    .promo-info-box {
+        width: 100px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* AJUSTES PARA TELAS ATÉ 1024px */
+@media (max-width: 1024px) {
+    .header-title {
+        font-size: clamp(1.5rem, 2.2vw, 2.2rem);
+    }
+
+    .logo {
+        width: clamp(120px, 12vw, 150px);
+    }
+
+    .promo-image {
+        width: clamp(100px, 10vw, 140px);
+        height: clamp(100px, 10vw, 140px);
     }
 
     .promo-info-box {
         width: 90px;
-        height: 36px;
+        height: 34px;
+        font-size: 0.95rem;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+}
+
+/* AJUSTES PARA TELAS ATÉ 768px */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .promo-container {
+        gap: 10px;
+    }
+
+    .logo {
+        width: clamp(100px, 14vw, 140px);
+    }
+
+    .promo-info-box {
+        width: 80px;
+        height: 30px;
         font-size: 0.9rem;
     }
 
     .product-container {
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
+
+    .product {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
 }
 
+/* AJUSTES PARA TELAS ATÉ 480px */
 @media (max-width: 480px) {
     .header-title {
         font-size: 1.4rem;
     }
 
     .logo {
-        width: 100px;
+        width: 90px;
+    }
+
+    .promo-image {
+        width: 90px;
+        height: 90px;
     }
 
     .promo-info-box {
-        width: 80px;
-        height: 30px;
+        width: 70px;
+        height: 26px;
         font-size: 0.8rem;
-    }
-
-    .product {
-        font-size: 0.9rem;
-        padding: 8px;
     }
 
     .product-container {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    .product {
+        font-size: 0.85rem;
+        padding: 8px;
     }
 }
